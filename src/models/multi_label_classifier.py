@@ -11,7 +11,7 @@ from allennlp.nn.util import get_text_field_mask
 from allennlp.training.metrics import CategoricalAccuracy
 
 
-@Model.register("multi_label_classifier")
+@Model.register("multi_label")
 class MultiLabelClassifier(Model):
     """
     This `Model` implements a basic text classifier. After embedding the text into
@@ -21,7 +21,7 @@ class MultiLabelClassifier(Model):
     `Seq2SeqEncoder` is not provided, we will pass the embedded text directly to the
     `Seq2VecEncoder`.
 
-    Registered as a `Model` with name "basic_classifier".
+    Registered as a `Model` with name "multi_label".
 
     # Parameters
 
@@ -88,7 +88,7 @@ class MultiLabelClassifier(Model):
             self._num_labels = vocab.get_vocab_size(namespace=self._label_namespace)
         self._classification_layer = torch.nn.Linear(self._classifier_input_dim, self._num_labels)
         self._accuracy = CategoricalAccuracy()
-        self._loss = torch.nn.CrossEntropyLoss()
+        self._loss = torch.nn.BCEWithLogitsLoss()
         initializer(self)
 
     def forward(  # type: ignore
