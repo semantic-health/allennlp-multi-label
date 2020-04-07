@@ -21,7 +21,7 @@ git clone https://github.com/JohnGiorgi/allennlp-multi-label-document-classifica
 Then, install
 
 ```bash
-cd t2t
+cd allennlp-multi-label-document-classification
 pip install --editable .
 ```
 
