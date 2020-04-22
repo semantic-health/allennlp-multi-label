@@ -13,7 +13,7 @@ setuptools.setup(
     ),
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/JohnGiorgi/t2t",
+    url="https://github.com/JohnGiorgi/allennlp-multi-label-document-classification",
     packages=setuptools.find_packages(),
     keywords=[
         "natural language processing",
