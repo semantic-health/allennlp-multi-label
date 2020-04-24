@@ -135,17 +135,17 @@ class FBetaMeasureMultiLabel(FBetaMeasure):
             mask = torch.ones_like(gold_labels).bool()
         gold_labels = gold_labels.float()
 
-        threshold_predictions = predictions
-        threshold_predictions[predictions >= self._threshold] = 1
-        threshold_predictions[predictions < self._threshold] = 0
-
+        threshold_predictions = torch.where(
+            predictions >= self._threshold,
+            torch.ones_like(predictions),
+            torch.zeros_like(predictions),
+        )
         true_positives = (gold_labels == threshold_predictions) & mask
         true_positive_sum = true_positives.sum(dim=0).float()
         pred_sum = threshold_predictions.sum(dim=0).float()
         true_sum = gold_labels.sum(dim=0).float()
-        total_sum = torch.ones_like(true_sum).float()
 
         self._true_positive_sum += true_positive_sum
         self._pred_sum += pred_sum
         self._true_sum += true_sum
-        self._total_sum += total_sum
+        self._total_sum += mask.sum().to(torch.float)

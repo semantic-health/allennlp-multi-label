@@ -3,8 +3,7 @@ from typing import Dict, Optional
 import torch
 from allennlp.data import TextFieldTensors, Vocabulary
 from allennlp.models.model import Model
-from allennlp.modules import (FeedForward, Seq2SeqEncoder, Seq2VecEncoder,
-                              TextFieldEmbedder)
+from allennlp.modules import FeedForward, Seq2SeqEncoder, Seq2VecEncoder, TextFieldEmbedder
 from allennlp.nn import InitializerApplicator
 from allennlp.nn.util import get_text_field_mask
 from src.training.metrics import FBetaMeasureMultiLabel
@@ -139,12 +138,11 @@ class MultiLabelClassifier(Model):
         if labels is not None:
             loss = self._loss(logits, labels.float().view(-1, self._num_labels))
             output_dict["loss"] = loss
-            # TODO (John): Not sure if this is neccesary. It existed in Nicks code.
+            # TODO (John): Not sure why this is neccesary. It existed in Nicks code.
             cloned_logits, cloned_labels = logits.clone(), labels.clone()
-            self._micro_f1(predictions=cloned_logits, gold_labels=cloned_labels)
-            self._macro_f1(predictions=cloned_logits, gold_labels=cloned_labels)
-            self._binary_f1(predictions=cloned_logits, gold_labels=cloned_labels)
-            output_dict["metrics"] = self.get_metrics(reset=False)
+            self._micro_f1(cloned_logits, cloned_labels)
+            self._macro_f1(cloned_logits, cloned_labels)
+            self._binary_f1(cloned_logits, cloned_labels)
 
         return output_dict
 
