@@ -138,7 +138,8 @@ class MultiLabelClassifier(Model):
         if labels is not None:
             loss = self._loss(logits, labels.float().view(-1, self._num_labels))
             output_dict["loss"] = loss
-            # TODO (John): Not sure why this is neccesary. It existed in Nicks code.
+            # TODO (John): This shouldn't be necessary as __call__ of the metrics detaches these
+            # tensors anyways?
             cloned_logits, cloned_labels = logits.clone(), labels.clone()
             self._micro_f1(cloned_logits, cloned_labels)
             self._macro_f1(cloned_logits, cloned_labels)

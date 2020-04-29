@@ -2,7 +2,8 @@ from typing import List, Optional, Union
 
 import torch
 from allennlp.common.checks import ConfigurationError
-from allennlp.training.metrics import FBetaMeasure, Metric
+from allennlp.training.metrics import FBetaMeasure
+from allennlp.training.metrics.metric import Metric
 from overrides import overrides
 
 
@@ -63,9 +64,9 @@ class FBetaMeasureMultiLabel(FBetaMeasure):
     def __init__(
         self,
         beta: float = 1.0,
+        threshold: float = 0.5,
         average: str = None,
         labels: List[int] = None,
-        threshold: float = 0.5,
     ) -> None:
         average_options = {None, "micro", "macro", "weighted"}
         if average not in average_options:
@@ -75,9 +76,9 @@ class FBetaMeasureMultiLabel(FBetaMeasure):
         if labels is not None and len(labels) == 0:
             raise ConfigurationError("`labels` cannot be an empty list.")
         self._beta = beta
+        self._threshold = threshold
         self._average = average
         self._labels = labels
-        self._threshold = threshold
 
         # statistics
         # the total number of true positive instances under each class
@@ -132,7 +133,7 @@ class FBetaMeasureMultiLabel(FBetaMeasure):
             self._total_sum = torch.zeros(num_classes, device=predictions.device)
 
         if mask is None:
-            mask = torch.ones_like(gold_labels).bool()
+            mask = gold_labels.bool()
         gold_labels = gold_labels.float()
 
         threshold_predictions = torch.where(
@@ -144,8 +145,9 @@ class FBetaMeasureMultiLabel(FBetaMeasure):
         true_positive_sum = true_positives.sum(dim=0).float()
         pred_sum = threshold_predictions.sum(dim=0).float()
         true_sum = gold_labels.sum(dim=0).float()
+        total_sum = torch.ones_like(true_sum).float()
 
         self._true_positive_sum += true_positive_sum
         self._pred_sum += pred_sum
         self._true_sum += true_sum
-        self._total_sum += mask.sum().to(torch.float)
+        self._total_sum += total_sum
