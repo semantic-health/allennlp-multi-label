@@ -44,7 +44,7 @@ To train the model, run the following command
 ```bash
 allennlp train configs/multi_label_classifier.jsonnet \
     -s output \
-    -o '{"train_data_path": "path/to/input.txt"}' \
+    -o "{'train_data_path': 'path/to/input.txt'}" \
     --include-package src
 ```
 

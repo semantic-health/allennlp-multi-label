@@ -1,14 +1,12 @@
 from typing import Dict, Optional
 
-from overrides import overrides
 import torch
-
 from allennlp.data import TextFieldTensors, Vocabulary
 from allennlp.models.model import Model
 from allennlp.modules import FeedForward, Seq2SeqEncoder, Seq2VecEncoder, TextFieldEmbedder
 from allennlp.nn import InitializerApplicator
 from allennlp.nn.util import get_text_field_mask
-from allennlp.training.metrics import CategoricalAccuracy
+from src.training.metrics import FBetaMeasureMultiLabel
 
 
 @Model.register("multi_label")
@@ -87,12 +85,14 @@ class MultiLabelClassifier(Model):
         else:
             self._num_labels = vocab.get_vocab_size(namespace=self._label_namespace)
         self._classification_layer = torch.nn.Linear(self._classifier_input_dim, self._num_labels)
-        self._accuracy = CategoricalAccuracy()
+        self._micro_f1 = FBetaMeasureMultiLabel(beta=1.0, average="micro")
+        self._macro_f1 = FBetaMeasureMultiLabel(beta=1.0, average="macro")
+        self._binary_f1 = FBetaMeasureMultiLabel(beta=1.0, average=None)
         self._loss = torch.nn.BCEWithLogitsLoss()
         initializer(self)
 
     def forward(  # type: ignore
-        self, tokens: TextFieldTensors, label: torch.IntTensor = None
+        self, tokens: TextFieldTensors, labels: torch.IntTensor = None
     ) -> Dict[str, torch.Tensor]:
 
         """
@@ -131,17 +131,25 @@ class MultiLabelClassifier(Model):
             embedded_text = self._feedforward(embedded_text)
 
         logits = self._classification_layer(embedded_text)
-        probs = torch.nn.functional.softmax(logits, dim=-1)
+        probs = torch.sigmoid(logits)
 
         output_dict = {"logits": logits, "probs": probs}
 
-        if label is not None:
-            loss = self._loss(logits, label.long().view(-1))
+        if labels is not None:
+            loss = self._loss(logits, labels.float().view(-1, self._num_labels))
             output_dict["loss"] = loss
-            self._accuracy(logits, label)
+            # TODO (John): This shouldn't be necessary as __call__ of the metrics detaches these
+            # tensors anyways?
+            cloned_logits, cloned_labels = logits.clone(), labels.clone()
+            self._micro_f1(cloned_logits, cloned_labels)
+            self._macro_f1(cloned_logits, cloned_labels)
+            self._binary_f1(cloned_logits, cloned_labels)
 
         return output_dict
 
+    # TODO (John): We probably do need to write this, but its not as important as just getting
+    # the model running. Ignoring for now.
+    '''
     @overrides
     def make_output_human_readable(
         self, output_dict: Dict[str, torch.Tensor]
@@ -164,7 +172,20 @@ class MultiLabelClassifier(Model):
             classes.append(label_str)
         output_dict["label"] = classes
         return output_dict
+    '''
 
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:
-        metrics = {"accuracy": self._accuracy.get_metric(reset)}
+        micro = self._micro_f1.get_metric(reset)
+        macro = self._macro_f1.get_metric(reset)
+        # TODO (John): This is never used, what do we want to do with it?
+        binary = self._binary_f1.get_metric(reset)
+
+        metrics = {
+            "micro_precision": micro["precision"],
+            "micro_recall": micro["recall"],
+            "micro_fscore": micro["fscore"],
+            "macro_precision": macro["precision"],
+            "macro_recall": macro["recall"],
+            "macro_fscore": macro["fscore"],
+        }
         return metrics
