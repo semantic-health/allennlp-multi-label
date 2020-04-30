@@ -29,7 +29,11 @@ For the time being, please install [AllenNLP](https://github.com/allenai/allennl
 
 #### Enabling mixed-precision training
 
-If you want to train with [mixed-precision](https://devblogs.nvidia.com/mixed-precision-training-deep-neural-networks/) (strongly recommended if your GPU supports it), you will need to [install Apex with CUDA and C++ extensions](https://github.com/NVIDIA/apex#quick-start). Once installed, you need only to set `"opt_level"` to `"O1"` in your training [config](configs).
+If you want to train with [mixed-precision](https://devblogs.nvidia.com/mixed-precision-training-deep-neural-networks/) (strongly recommended if your GPU supports it), you will need to [install Apex with CUDA and C++ extensions](https://github.com/NVIDIA/apex#quick-start). Once installed, you need only to set `"opt_level"` to `"O1"` in your training [config](configs), or, equivalently, pass the following flag to `allennlp train` (see [Training](#training))
+
+```bash
+--overrides "{'trainer.opt_level': 'O1'}"
+```
 
 ## Usage
 
@@ -49,6 +53,16 @@ allennlp train configs/multi_label_classifier.jsonnet \
 ```
 
 During training, models, vocabulary, configuration and log files will be saved to `output`. This can be changed to any path you like.
+
+#### Multi-GPU training
+
+To train on more than one GPU, provide a list of CUDA devices in your training [config](configs) under `"distributed.cuda_devices"`, or, equivalently, pass the following flag to `allennlp train`
+
+```bash
+--overrides "{'distributed.cuda_devices': [0, 1, 2, 3]}"
+```
+
+This would train your model on four CUDA devices with IDs `0, 1, 2, 3`.
 
 ### Inference
 
