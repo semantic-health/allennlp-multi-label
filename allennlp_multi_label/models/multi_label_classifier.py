@@ -6,7 +6,7 @@ from allennlp.models.model import Model
 from allennlp.modules import FeedForward, Seq2SeqEncoder, Seq2VecEncoder, TextFieldEmbedder
 from allennlp.nn import InitializerApplicator
 from allennlp.nn.util import get_text_field_mask
-from src.training.metrics import FBetaMeasureMultiLabel
+from allennlp_multi_label.training.metrics import FBetaMeasureMultiLabel
 
 
 @Model.register("multi_label")

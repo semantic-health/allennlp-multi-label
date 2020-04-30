@@ -4,16 +4,16 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="allennlp-multi-label-document-classification",
+    name="allennlp-multi-label-classification",
     version="0.1.0",
     author="John Giorgi",
     author_email="johnmgiorgi@gmail.com",
     description=(
-        "A multi-label document classification plugin for AllenNLP"
+        "A multi-label classification plugin for AllenNLP"
     ),
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/JohnGiorgi/allennlp-multi-label-document-classification",
+    url="https://github.com/JohnGiorgi/allennlp-multi-label-classification",
     packages=setuptools.find_packages(),
     keywords=[
         "natural language processing",
@@ -35,7 +35,7 @@ setuptools.setup(
         "Topic :: Scientific/Engineering :: Artificial Intelligence",
         "Typing :: Typed",
     ],
-    python_requires=">=3.7",
+    python_requires=">=3.6.1",
     install_requires=[
         "torch>=1.4.0",
     ],
