@@ -1,3 +1,5 @@
+![build](https://github.com/JohnGiorgi/allennlp-multi-label-document-classification/workflows/build/badge.svg?branch=master)
+
 # AllenNLP Multi-label Document Classification Plugin
 
 A simple multi-label document classification plugin for [AllenNLP](https://allennlp.org/).
