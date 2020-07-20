@@ -6,20 +6,15 @@ ignore =
     E203  # whitespace before :
     W503  # line break before binary operator
 
-exclude =
-    build/**
-    doc/**
-
 per-file-ignores =
     # __init__.py files are allowed to have unused imports and lines-too-long
-    allennlp_multi_label/__init__.py:F401
-    allennlp_multi_label/**/__init__.py:F401,E501
-    allennlp_plugins/**/__init__.py:F401
+    */__init__.py:F401
+    */**/**/__init__.py:F401,E501
 
     # tests don't have to respect
-    #  E501: line length
-    #  E261: 2 spaces before comments (it would be ideal if they did, though)
     #  E731: do not assign a lambda expression, use a def
-    #  F401: unused imports
-    tests/**:E501,E261,E731,F401
+    tests/**:E731
 
+    # scripts don't have to respect
+    #  E402: imports not at top of file (because we mess with sys.path)
+    scripts/**:E402

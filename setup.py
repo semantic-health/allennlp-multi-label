@@ -4,14 +4,14 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="allennlp-multi-label-classification",
+    name="allennlp-multi-label",
     version="0.1.0",
     author="John Giorgi",
     author_email="johnmgiorgi@gmail.com",
     description=("A multi-label classification plugin for AllenNLP"),
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/JohnGiorgi/allennlp-multi-label-classification",
+    url="https://github.com/semantic-health/allennlp-multi-label",
     packages=setuptools.find_packages(),
     keywords=[
         "natural language processing",
@@ -35,5 +35,7 @@ setuptools.setup(
     ],
     python_requires=">=3.6.1",
     install_requires=["allennlp>=1.0.0"],
-    extras_require={"dev": ["black", "flake8", "pytest"]},
+    extras_require={
+        "dev": ["black", "flake8", "hypothesis", "pytest", "pytest-cov", "coverage", "codecov"]
+    },
 )
