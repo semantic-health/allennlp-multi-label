@@ -1,1 +1,1 @@
-from allennlp_multi_label
+import allennlp_multi_label

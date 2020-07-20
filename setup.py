@@ -8,9 +8,7 @@ setuptools.setup(
     version="0.1.0",
     author="John Giorgi",
     author_email="johnmgiorgi@gmail.com",
-    description=(
-        "A multi-label classification plugin for AllenNLP"
-    ),
+    description=("A multi-label classification plugin for AllenNLP"),
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/JohnGiorgi/allennlp-multi-label-classification",
@@ -36,8 +34,6 @@ setuptools.setup(
         "Typing :: Typed",
     ],
     python_requires=">=3.6.1",
-    install_requires=[
-        "torch>=1.4.0",
-    ],
+    install_requires=["allennlp>=1.0.0"],
     extras_require={"dev": ["black", "flake8", "pytest"]},
 )
