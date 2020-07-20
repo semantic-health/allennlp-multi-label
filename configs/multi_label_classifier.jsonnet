@@ -1,12 +1,9 @@
 // This should be a registered name in the Transformers library (see https://huggingface.co/models) 
 // OR a path on disk to a serialized transformer model. 
-// Note, to avoid issues, please name the serialized model folder in roughly the same format as the
-// Transformers library, e.g.
-// [bert|roberta|gpt2|distillbert|etc]-[base|large|etc]-[uncased|cased|etc]
 local transformer_model = "distilroberta-base";
-// This corresponds to PretrainedTransformerEmbedder.transformer_model.config.hidden_size
-local token_embedding_size = 768;
-// This will be used to set the max # of tokens in the anchor, positive and negative examples.
+// The hidden size of the model, which can be found in its config as "hidden_size".
+local transformer_dim = 768;
+// This will be used to set the max # of tokens in the positive and negative examples.
 local max_length = 512;
 
 {
@@ -27,7 +24,7 @@ local max_length = 512;
         // If a cache file exists at this directory, it will be loaded instead of re-processing the data.
         "cache_directory": null
     }, 
-    "train_data_path": "",
+    "train_data_path": null,
     "model": {
         "type": "multi_label",
         "text_field_embedder": {
@@ -40,7 +37,7 @@ local max_length = 512;
         },
         "seq2vec_encoder": {
             "type": "bag_of_embeddings",
-            "embedding_dim": token_embedding_size,
+            "embedding_dim": transformer_dim,
             "averaged": true
         },
     },

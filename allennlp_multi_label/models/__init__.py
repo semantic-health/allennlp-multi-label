@@ -1,0 +1,1 @@
+from allennlp_multi_label.models.multi_label_classifier import MultiLabelClassifier

@@ -4,15 +4,16 @@ import torch
 from allennlp.data import TextFieldTensors, Vocabulary
 from allennlp.models.model import Model
 from allennlp.modules import FeedForward, Seq2SeqEncoder, Seq2VecEncoder, TextFieldEmbedder
-from allennlp.nn import InitializerApplicator
+from allennlp.nn import InitializerApplicator, util
 from allennlp.nn.util import get_text_field_mask
-from src.training.metrics import FBetaMeasureMultiLabel
+from allennlp_multi_label.training.metrics import FBetaMeasureMultiLabel
+from overrides import overrides
 
 
 @Model.register("multi_label")
 class MultiLabelClassifier(Model):
     """
-    This `Model` implements a basic text classifier. After embedding the text into
+    This `Model` implements a basic multi-label text classifier. After embedding the text into
     a text field, we will optionally encode the embeddings with a `Seq2SeqEncoder`. The
     resulting sequence is pooled using a `Seq2VecEncoder` and then passed to
     a linear classification layer, which projects into the label space. If a
@@ -36,6 +37,8 @@ class MultiLabelClassifier(Model):
         An optional feedforward layer to apply after the seq2vec_encoder.
     dropout : `float`, optional (default = `None`)
         Dropout percentage to use.
+    threshold : `float`, optional (default = `0.5`)
+        Threshold on the sigmoid output for multi-label classification.
     num_labels : `int`, optional (default = `None`)
         Number of labels to project to in classification layer. By default, the classification layer will
         project to the size of the vocabulary namespace corresponding to labels.
@@ -53,6 +56,7 @@ class MultiLabelClassifier(Model):
         seq2seq_encoder: Seq2SeqEncoder = None,
         feedforward: Optional[FeedForward] = None,
         dropout: float = None,
+        threshold: float = 0.5,
         num_labels: int = None,
         label_namespace: str = "labels",
         initializer: InitializerApplicator = InitializerApplicator(),
@@ -61,15 +65,10 @@ class MultiLabelClassifier(Model):
 
         super().__init__(vocab, **kwargs)
         self._text_field_embedder = text_field_embedder
-
-        if seq2seq_encoder:
-            self._seq2seq_encoder = seq2seq_encoder
-        else:
-            self._seq2seq_encoder = None
-
+        self._seq2seq_encoder = seq2seq_encoder
         self._seq2vec_encoder = seq2vec_encoder
         self._feedforward = feedforward
-        if feedforward is not None:
+        if self._feedforward is not None:
             self._classifier_input_dim = self._feedforward.get_output_dim()
         else:
             self._classifier_input_dim = self._seq2vec_encoder.get_output_dim()
@@ -78,16 +77,22 @@ class MultiLabelClassifier(Model):
             self._dropout = torch.nn.Dropout(dropout)
         else:
             self._dropout = None
-        self._label_namespace = label_namespace
 
+        self._threshold = threshold
+
+        self._label_namespace = label_namespace
         if num_labels:
             self._num_labels = num_labels
         else:
             self._num_labels = vocab.get_vocab_size(namespace=self._label_namespace)
         self._classification_layer = torch.nn.Linear(self._classifier_input_dim, self._num_labels)
-        self._micro_f1 = FBetaMeasureMultiLabel(beta=1.0, average="micro")
-        self._macro_f1 = FBetaMeasureMultiLabel(beta=1.0, average="macro")
-        self._binary_f1 = FBetaMeasureMultiLabel(beta=1.0, average=None)
+        self._micro_f1 = FBetaMeasureMultiLabel(
+            beta=1.0, threshold=self._threshold, average="micro"
+        )
+        self._macro_f1 = FBetaMeasureMultiLabel(
+            beta=1.0, threshold=self._threshold, average="macro"
+        )
+        self._binary_f1 = FBetaMeasureMultiLabel(beta=1.0, threshold=self._threshold, average=None)
         self._loss = torch.nn.BCEWithLogitsLoss()
         initializer(self)
 
@@ -134,7 +139,7 @@ class MultiLabelClassifier(Model):
         probs = torch.sigmoid(logits)
 
         output_dict = {"logits": logits, "probs": probs}
-
+        output_dict["token_ids"] = util.get_token_ids_from_text_field_tensors(tokens)
         if labels is not None:
             loss = self._loss(logits, labels.float().view(-1, self._num_labels))
             output_dict["loss"] = loss
@@ -147,16 +152,13 @@ class MultiLabelClassifier(Model):
 
         return output_dict
 
-    # TODO (John): We probably do need to write this, but its not as important as just getting
-    # the model running. Ignoring for now.
-    '''
     @overrides
     def make_output_human_readable(
         self, output_dict: Dict[str, torch.Tensor]
     ) -> Dict[str, torch.Tensor]:
         """
-        Does a simple argmax over the probabilities, converts index to string label, and
-        add `"label"` key to the dictionary with the result.
+        Thresholds the probabilities, converts indices to string labels, and add `"labels"` key to
+        the dictionary with the result.
         """
         predictions = output_dict["probs"]
         if predictions.dim() == 2:
@@ -165,20 +167,28 @@ class MultiLabelClassifier(Model):
             predictions_list = [predictions]
         classes = []
         for prediction in predictions_list:
-            label_idx = prediction.argmax(dim=-1).item()
-            label_str = self.vocab.get_index_to_token_vocabulary(self._label_namespace).get(
-                label_idx, str(label_idx)
-            )
-            classes.append(label_str)
-        output_dict["label"] = classes
+            # Because this is multi-label, we need all indices where the prediction prob crossed
+            # the threshold (if any)...
+            label_indices = torch.nonzero(prediction >= self._threshold, as_tuple=True)
+            if label_indices:
+                label_indices = label_indices[0].tolist()
+            else:
+                label_indices = []
+            # ...and every prediction is a list of strings as opposed to a single string
+            label_strings = [
+                self.vocab.get_index_to_token_vocabulary(self._label_namespace).get(idx, str(idx))
+                for idx in label_indices
+            ]
+            classes.append(label_strings)
+
+        output_dict["labels"] = classes
         return output_dict
-    '''
 
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:
         micro = self._micro_f1.get_metric(reset)
         macro = self._macro_f1.get_metric(reset)
         # TODO (John): This is never used, what do we want to do with it?
-        binary = self._binary_f1.get_metric(reset)
+        # binary = self._binary_f1.get_metric(reset)
 
         metrics = {
             "micro_precision": micro["precision"],
@@ -189,3 +199,5 @@ class MultiLabelClassifier(Model):
             "macro_fscore": macro["fscore"],
         }
         return metrics
+
+    default_predictor = "multi_label"

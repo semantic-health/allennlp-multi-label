@@ -1,8 +1,9 @@
-![build](https://github.com/JohnGiorgi/allennlp-multi-label-document-classification/workflows/build/badge.svg?branch=master)
+![build](https://github.com/JohnGiorgi/allennlp-multi-label-classification/workflows/build/badge.svg?branch=master)
+![GitHub](https://img.shields.io/github/license/JohnGiorgi/allennlp-multi-label-classification?color=blue)
 
-# AllenNLP Multi-label Document Classification Plugin
+# AllenNLP Multi-label Classification Plugin
 
-A simple multi-label document classification plugin for [AllenNLP](https://allennlp.org/).
+A multi-label classification plugin for [AllenNLP](https://allennlp.org/).
 
 ## Installation
 
@@ -17,13 +18,13 @@ Before installing, you should create and activate a Python virtual environment. 
 First, clone the repository locally
 
 ```bash
-git clone https://github.com/JohnGiorgi/allennlp-multi-label-document-classification.git
+git clone https://github.com/JohnGiorgi/allennlp-multi-label-classification.git
 ```
 
 Then, install
 
 ```bash
-cd allennlp-multi-label-document-classification
+cd allennlp-multi-label-classification
 pip install --editable .
 ```
 
@@ -51,7 +52,7 @@ To train the model, run the following command
 allennlp train configs/multi_label_classifier.jsonnet \
     -s output \
     -o "{'train_data_path': 'path/to/input.txt'}" \
-    --include-package src
+    --include-package allennlp_multi_label
 ```
 
 During training, models, vocabulary, configuration and log files will be saved to `output`. This can be changed to any path you like.
