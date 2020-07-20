@@ -7,7 +7,7 @@ A multi-label classification plugin for [AllenNLP](https://allennlp.org/).
 
 ## Installation
 
-This repository requires Python 3.7 or later.
+This repository requires Python 3.6.1 or later.
 
 ### Setting up a virtual environment
 
@@ -18,54 +18,61 @@ Before installing, you should create and activate a Python virtual environment. 
 First, clone the repository locally
 
 ```bash
-git clone https://github.com/JohnGiorgi/allennlp-multi-label-classification.git
+git clone https://github.com/semantic-health/allennlp-multi-label.git
 ```
 
 Then, install
 
 ```bash
-cd allennlp-multi-label-classification
+cd allennlp-multi-label
 pip install --editable .
 ```
 
-For the time being, please install [AllenNLP](https://github.com/allenai/allennlp) [from source](https://github.com/allenai/allennlp#installing-from-source). You should also install [PyTorch](https://pytorch.org/) with [CUDA](https://developer.nvidia.com/cuda-zone) support by following the instructions for your system [here](https://pytorch.org/get-started/locally/).
-
-#### Enabling mixed-precision training
-
-If you want to train with [mixed-precision](https://devblogs.nvidia.com/mixed-precision-training-deep-neural-networks/) (strongly recommended if your GPU supports it), you will need to [install Apex with CUDA and C++ extensions](https://github.com/NVIDIA/apex#quick-start). Once installed, you need only to set `"opt_level"` to `"O1"` in your training [config](configs), or, equivalently, pass the following flag to `allennlp train` (see [Training](#training))
-
-```bash
---overrides "{'trainer.opt_level': 'O1'}"
-```
+You should also install [PyTorch](https://pytorch.org/) with [CUDA](https://developer.nvidia.com/cuda-zone) support by following the instructions for your system [here](https://pytorch.org/get-started/locally/).
 
 ## Usage
 
 ### Preparing a dataset
 
-Datasets should be JSON lines files, where each line is valid JSON containing the fields `"text"` and `"labels"`. You can specify different partitions in the [configs](configs) under `"train_data_path"`, `"validation_data_path"` and `"test_data_path"`.
+Datasets should be [JSON Lines](http://jsonlines.org/) files, where each line is valid JSON containing the fields `"text"` and `"labels"`, e.g.
+
+```json
+{"text": "NO GRAIN SHIPMENTS TO THE USSR -- USDA There were no shipments of U.S. grain or soybeans to the Soviet Union in the week ended March 19, according to the U.S. Agriculture Department's latest Export Sales report. The USSR has purchased 2.40 mln tonnes of U.S. corn for delivery in the fourth year of the U.S.-USSR grain agreement. Total shipments in the third year of the U.S.-USSR grains agreement, which ended September 30, amounted to 152,600 tonnes of wheat, 6,808,100 tonnes of corn and 1,518,700 tonnes of soybeans.", "labels": ["soybean", "oilseed", "wheat", "corn", "grain"]}
+```
+
+You can specify the train set path in the [configs](training_config) under `"train_data_path"`, `"validation_data_path"` and `"test_data_path"`.
 
 ### Training
 
-To train the model, run the following command
+To train the model, use the [`allennlp train`](https://docs.allennlp.org/master/api/commands/train/) command with our [`multi_label_classifier.jsonnet`](training_config/multi_label_classifier.jsonnet) config
 
 ```bash
-allennlp train configs/multi_label_classifier.jsonnet \
-    -s output \
-    -o "{'train_data_path': 'path/to/input.txt'}" \
-    --include-package allennlp_multi_label
+# This can be (almost) any model from https://huggingface.co/
+TRANSFORMER_MODEL="distilroberta-base"
+
+allennlp train "configs/multi_label_classifier.jsonnet" \
+    --serialization-dir "output" \
+    --overrides "{'train_data_path': 'path/to/your/dataset/train.txt'}" \
+    --include-package "allennlp_multi_label"
 ```
 
-During training, models, vocabulary, configuration and log files will be saved to `output`. This can be changed to any path you like.
+The `--overrides` flag allows you to override any field in the config with a JSON-formatted string, but you can equivalently update the config itself if you prefer. During training, models, vocabulary, configuration, and log files will be saved to the directory provided by `--serialization-dir`. This can be changed to any directory you like. 
 
 #### Multi-GPU training
 
-To train on more than one GPU, provide a list of CUDA devices in your training [config](configs) under `"distributed.cuda_devices"`, or, equivalently, pass the following flag to `allennlp train`
+To train on more than one GPU, provide a list of CUDA devices in your call to `allennlp train`. For example, to train with four CUDA devices with IDs `0, 1, 2, 3`
 
 ```bash
 --overrides "{'distributed.cuda_devices': [0, 1, 2, 3]}"
 ```
 
-This would train your model on four CUDA devices with IDs `0, 1, 2, 3`.
+#### Training with mixed-precision
+
+If you want to train with [mixed-precision](https://devblogs.nvidia.com/mixed-precision-training-deep-neural-networks/) (strongly recommended if your GPU supports it), you will need to [install Apex with CUDA and C++ extensions](https://github.com/NVIDIA/apex#quick-start). Once installed, you need only to set `"opt_level"` to `"O1"` in your training [config](configs), or, equivalently, pass the following flag to `allennlp train`
+
+```bash
+--overrides "{'trainer.opt_level': 'O1'}"
+```
 
 ### Inference
 
