@@ -1,9 +1,7 @@
 // This should be a registered name in the Transformers library (see https://huggingface.co/models) 
-// OR a path on disk to a serialized transformer model. 
-local transformer_model = "distilroberta-base";
-// The hidden size of the model, which can be found in its config as "hidden_size".
-local transformer_dim = 768;
-// This will be used to set the max # of tokens in the positive and negative examples.
+// OR a path on disk to a serialized transformer model.
+local transformer_model = std.extVar("TRANSFORMER_MODEL");
+// Inputs longer than this will be truncated.
 local max_length = 512;
 
 {
@@ -12,7 +10,8 @@ local max_length = 512;
         "tokenizer": {
             "type": "pretrained_transformer",
             "model_name": transformer_model,
-            "max_length": max_length,
+            // Account for special tokens (e.g. CLS and SEP), otherwise a cryptic error is thrown.
+            "max_length": max_length - 2,
         },
         "token_indexers": {
             "tokens": {
@@ -25,6 +24,7 @@ local max_length = 512;
         "cache_directory": null
     }, 
     "train_data_path": null,
+    "validation_data_path": null,
     "model": {
         "type": "multi_label",
         "text_field_embedder": {
@@ -34,11 +34,6 @@ local max_length = 512;
                     "model_name": transformer_model,
                 },
             },
-        },
-        "seq2vec_encoder": {
-            "type": "bag_of_embeddings",
-            "embedding_dim": transformer_dim,
-            "averaged": true
         },
     },
     "data_loader": {
@@ -50,7 +45,7 @@ local max_length = 512;
         "num_workers": 1
     },
     "trainer": {
-        // If you have installed Apex, you can chose one of its opt_levels here to use mixed precision training.
+        // If Apex is installed, chose one of its opt_levels here to use mixed-precision training.
         "opt_level": null,
         "optimizer": {
             "type": "huggingface_adamw",
@@ -67,7 +62,9 @@ local max_length = 512;
         "checkpointer": {
             "num_serialized_models_to_keep": 1,
         },
-        "cuda_device": 0,
         "grad_norm": 1.0,
+        "learning_rate_scheduler": {
+            "type": "slanted_triangular",
+        },
     },
 }
