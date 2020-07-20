@@ -34,10 +34,9 @@ class FBetaMeasureMultiLabel(FBetaMeasure):
 
     # Parameters
 
-    beta : `float`, optional (default = 1.0)
+    beta : `float`, optional (default = `1.0`)
         The strength of recall versus precision in the F-score.
-
-    average : string, [None (default), 'micro', 'macro', 'weighted']
+    average : `str`, optional (default = `None`)
         If `None`, the scores for each class are returned. Otherwise, this
         determines the type of averaging performed on the data:
 
@@ -52,21 +51,22 @@ class FBetaMeasureMultiLabel(FBetaMeasure):
             by support (the number of true instances for each label). This
             alters 'macro' to account for label imbalance; it can result in an
             F-score that is not between precision and recall.
-
     labels: `list`, optional
         The set of labels to include and their order if `average is None`.
         Labels present in the data can be excluded, for example to calculate a
         multi-class average ignoring a majority negative class. Labels not present
         in the data will result in 0 components in a macro or weighted average.
+    threshold: `float`, optional (default = `0.5`)
+        Logits over this threshold will be considered predictions for the corresponding class.
 
     """
 
     def __init__(
         self,
         beta: float = 1.0,
-        threshold: float = 0.5,
         average: str = None,
         labels: List[int] = None,
+        threshold: float = 0.5,
     ) -> None:
         average_options = {None, "micro", "macro", "weighted"}
         if average not in average_options:
@@ -76,9 +76,9 @@ class FBetaMeasureMultiLabel(FBetaMeasure):
         if labels is not None and len(labels) == 0:
             raise ConfigurationError("`labels` cannot be an empty list.")
         self._beta = beta
-        self._threshold = threshold
         self._average = average
         self._labels = labels
+        self._threshold = threshold
 
         # statistics
         # the total number of true positive instances under each class
