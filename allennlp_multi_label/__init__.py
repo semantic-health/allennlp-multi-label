@@ -1,3 +1,1 @@
-import allennlp_multi_label.models
-import allennlp_multi_label.data
-import allennlp_multi_label.predictors
+from allennlp_multi_label.model import MultiLabelClassifier
