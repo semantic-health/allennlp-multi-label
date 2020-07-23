@@ -23,6 +23,6 @@ class TestMultiLabelClassifier(ModelTestCase):
         assert "probs" in output_dict.keys()
         assert "labels" in output_dict.keys()
 
-    @pytest.mark.skip(reason="takes far to long to run")
+    @pytest.mark.skip(reason="takes far too long to run")
     def test_can_train_save_and_load(self):
         self.ensure_model_can_train_save_and_load(self.param_file)
