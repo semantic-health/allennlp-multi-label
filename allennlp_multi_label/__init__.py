@@ -1,1 +1,2 @@
+from allennlp_multi_label.dataset_reader import MultiLabelTextClassificationJsonReader
 from allennlp_multi_label.model import MultiLabelClassifier
