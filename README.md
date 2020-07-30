@@ -44,11 +44,13 @@ You can specify the train set path in the [configs](training_config) under `"tra
 
 ### Training
 
-To train the model, use the [`allennlp train`](https://docs.allennlp.org/master/api/commands/train/) command with our [`multi_label_classifier.jsonnet`](training_config/multi_label_classifier.jsonnet) config
+For convenience, we have provided an example config file that will fine-tune a pretrained transformer-based language model (like BERT) for multi-label document classification. To train the model, use the [`allennlp train`](https://docs.allennlp.org/master/api/commands/train/) command with our [`multi_label_classifier.jsonnet`](training_config/multi_label_classifier.jsonnet) config
 
 ```bash
 # This can be (almost) any model from https://huggingface.co/
 TRANSFORMER_MODEL="distilroberta-base"
+# Should not be longer than the max length supported by TRANSFORMER_MODEL.
+MAX_LENGTH=512
 
 allennlp train "configs/multi_label_classifier.jsonnet" \
     --serialization-dir "output" \

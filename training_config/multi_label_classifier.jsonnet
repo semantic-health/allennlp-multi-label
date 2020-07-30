@@ -2,7 +2,8 @@
 // OR a path on disk to a serialized transformer model.
 local transformer_model = std.extVar("TRANSFORMER_MODEL");
 // Inputs longer than this will be truncated.
-local max_length = 512;
+// Should not be longer than the max length supported by transformer_model.
+local max_length = std.parseInt(std.extVar("MAX_LENGTH"));
 
 {
     "dataset_reader": {
@@ -22,7 +23,7 @@ local max_length = 512;
         // If not null, a cache of already-processed data will be stored in this directory.
         // If a cache file exists at this directory, it will be loaded instead of re-processing the data.
         "cache_directory": null
-    }, 
+    },
     "train_data_path": null,
     "validation_data_path": null,
     "model": {
