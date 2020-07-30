@@ -1,6 +1,6 @@
 import json
 import logging
-from typing import Dict, Iterable, List, Union
+from typing import Dict, Iterable, List, Optional, Union
 
 from overrides import overrides
 
@@ -46,6 +46,10 @@ class MultiLabelTextClassificationJsonReader(TextClassificationJsonReader):
     skip_label_indexing : `bool`, optional (default = `False`)
         Whether or not to skip label indexing. You might want to skip label indexing if your
         labels are numbers, so the dataset reader doesn't re-number them starting from 0.
+    num_labels : `int`, optional (default=`None`)
+        If `skip_indexing=True`, the total number of possible labels should be provided, which is
+        required to decide the size of the output tensor. `num_labels` should equal largest label
+        id + 1. If `skip_indexing=False`, `num_labels` is not required.
     """
 
     def __init__(
@@ -55,6 +59,7 @@ class MultiLabelTextClassificationJsonReader(TextClassificationJsonReader):
         segment_sentences: bool = False,
         max_sequence_length: int = None,
         skip_label_indexing: bool = False,
+        num_labels: Optional[int] = None,
         **kwargs,
     ) -> None:
         super().__init__(
@@ -65,6 +70,8 @@ class MultiLabelTextClassificationJsonReader(TextClassificationJsonReader):
             skip_label_indexing=skip_label_indexing,
             **kwargs,
         )
+
+        self._num_labels = num_labels
 
     @overrides
     def _read(self, file_path: str) -> Iterable[Instance]:
@@ -129,5 +136,7 @@ class MultiLabelTextClassificationJsonReader(TextClassificationJsonReader):
                 tokens = self._truncate(tokens)
             fields["tokens"] = TextField(tokens, self._token_indexers)
         if labels is not None:
-            fields["labels"] = MultiLabelField(labels, skip_indexing=self._skip_label_indexing)
+            fields["labels"] = MultiLabelField(
+                labels, skip_indexing=self._skip_label_indexing, num_labels=self._num_labels
+            )
         return Instance(fields)
