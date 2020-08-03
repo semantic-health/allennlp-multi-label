@@ -9,7 +9,7 @@ from allennlp.modules import FeedForward, Seq2SeqEncoder, Seq2VecEncoder, TextFi
 from allennlp.modules.seq2vec_encoders import BagOfEmbeddingsEncoder
 from allennlp.nn import InitializerApplicator, util
 from allennlp.nn.util import get_text_field_mask
-from allennlp_multi_label.training.metrics import FBetaMeasureMultiLabel
+from allennlp_multi_label import FBetaMeasureMultiLabel
 
 
 @Model.register("multi_label")

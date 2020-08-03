@@ -7,7 +7,7 @@ from torch.testing import assert_allclose
 
 from allennlp.common.checks import ConfigurationError
 from allennlp.common.testing import AllenNlpTestCase, multi_device
-from allennlp_multi_label.training.metrics import FBetaMeasureMultiLabel
+from allennlp_multi_label import FBetaMeasureMultiLabel
 
 
 class TestFBetaMeasureMultiLabel(AllenNlpTestCase):
