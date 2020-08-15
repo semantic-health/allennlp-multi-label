@@ -39,6 +39,7 @@ class FBetaMeasureMultiLabel(FBetaMeasure):
 
     beta : `float`, optional (default = `1.0`)
         The strength of recall versus precision in the F-score.
+
     average : `str`, optional (default = `None`)
         If `None`, the scores for each class are returned. Otherwise, this
         determines the type of averaging performed on the data:
@@ -54,11 +55,13 @@ class FBetaMeasureMultiLabel(FBetaMeasure):
             by support (the number of true instances for each label). This
             alters 'macro' to account for label imbalance; it can result in an
             F-score that is not between precision and recall.
+
     labels: `list`, optional
         The set of labels to include and their order if `average is None`.
         Labels present in the data can be excluded, for example to calculate a
         multi-class average ignoring a majority negative class. Labels not present
         in the data will result in 0 components in a macro or weighted average.
+
     threshold: `float`, optional (default = `0.5`)
         Logits over this threshold will be considered predictions for the corresponding class.
 
