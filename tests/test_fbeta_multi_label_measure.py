@@ -6,7 +6,12 @@ from sklearn.metrics import precision_recall_fscore_support
 from torch.testing import assert_allclose
 
 from allennlp.common.checks import ConfigurationError
-from allennlp.common.testing import AllenNlpTestCase, multi_device
+from allennlp.common.testing import (
+    AllenNlpTestCase,
+    multi_device,
+    run_distributed_test,
+    global_distributed_metric,
+)
 from allennlp_multi_label import FBetaMeasureMultiLabel
 
 
@@ -289,3 +294,41 @@ class TestFBetaMeasureMultiLabel(AllenNlpTestCase):
     @multi_device
     def test_fbeta_multilabel_handles_no_prediction_true_all_class(self, device: str):
         assert False
+
+    def test_distributed_fbeta_multilabel_measure(self):
+        predictions = [
+            torch.tensor(
+                [
+                    [0.55, 0.25, 0.10, 0.10, 0.20],
+                    [0.10, 0.60, 0.10, 0.95, 0.00],
+                    [0.90, 0.80, 0.75, 0.80, 0.00],
+                ]
+            ),
+            torch.tensor(
+                [
+                    [0.49, 0.50, 0.95, 0.55, 0.00],
+                    [0.60, 0.49, 0.60, 0.65, 0.85],
+                    [0.85, 0.40, 0.10, 0.20, 0.00],
+                ]
+            ),
+        ]
+
+        targets = [
+            torch.tensor([[1, 1, 0, 0, 0], [0, 1, 0, 1, 0], [1, 1, 0, 1, 0]]),
+            torch.tensor([[1, 1, 1, 1, 0], [1, 1, 1, 1, 0], [0, 0, 0, 0, 0]]),
+        ]
+
+        metric_kwargs = {"predictions": predictions, "gold_labels": targets}
+        desired_metrics = {
+            "precision": self.desired_precisions,
+            "recall": self.desired_recalls,
+            "fscore": self.desired_fscores,
+        }
+        run_distributed_test(
+            [-1, -1],
+            global_distributed_metric,
+            FBetaMeasureMultiLabel(),
+            metric_kwargs,
+            desired_metrics,
+            exact=False,
+        )
