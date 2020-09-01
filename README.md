@@ -16,20 +16,24 @@ Before installing, you should create and activate a Python virtual environment. 
 
 ### Installing the library and dependencies
 
-First, clone the repository locally
+If you _don't_ plan on modifying the source code, install from `git` using `pip`
+
+```
+pip install git+https://github.com/semantic-health/allennlp-multi-label.git
+```
+
+Otherwise, clone the repository locally and then install
 
 ```bash
 git clone https://github.com/semantic-health/allennlp-multi-label.git
-```
-
-Then, install
-
-```bash
 cd allennlp-multi-label
 pip install --editable .
 ```
 
-You should also install [PyTorch](https://pytorch.org/) with [CUDA](https://developer.nvidia.com/cuda-zone) support by following the instructions for your system [here](https://pytorch.org/get-started/locally/).
+#### Gotchas
+
+- For the time being, please install [AllenNLP](https://github.com/allenai/allennlp) [from source](https://github.com/allenai/allennlp#installing-from-source).
+- If you plan on training your own model, you should also install [PyTorch](https://pytorch.org/) with [CUDA](https://developer.nvidia.com/cuda-zone) support by following the instructions for your system [here](https://pytorch.org/get-started/locally/).
 
 ## Usage
 
