@@ -27,21 +27,22 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
+        pip install git+https://github.com/allenai/allennlp.git
         pip install --editable ".[dev]"
     - name: Format code with black
       run: |
-        black -l 100 allennlp_multi_label
+        black .
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
-        flake8 allennlp_multi_label --count --select=E9,F63,F7,F82 --show-source --statistics
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings.
-        flake8 allennlp_multi_label --count --exit-zero --max-complexity=10 --max-line-length=115 --statistics
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=115 --statistics
     - name: Test with pytest
       run: |
-        pytest tests -rf --cov ./allennlp_multi_label --cov-report=xml --cov-config=./.coveragerc 
+        pytest tests --cov ./allennlp_multi_label --cov-report=xml --cov-config=./.coveragerc
     - name: Upload coverage to Codecov
-      if: matrix.python-version == '3.7' && matrix.os == 'ubuntu-latest' && github.event_name == 'push'
+      if: matrix.python-version == '3.8' && matrix.os == 'ubuntu-latest' && github.event_name == 'push'
       uses: codecov/codecov-action@v1.0.13
       with:
         file: ./coverage.xml

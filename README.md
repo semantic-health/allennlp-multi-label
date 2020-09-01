@@ -52,7 +52,7 @@ TRANSFORMER_MODEL="distilroberta-base"
 # Should not be longer than the max length supported by TRANSFORMER_MODEL.
 MAX_LENGTH=512
 
-allennlp train "configs/multi_label_classifier.jsonnet" \
+allennlp train "training_config/multi_label_classifier.jsonnet" \
     --serialization-dir "output" \
     --overrides "{'train_data_path': 'path/to/your/dataset/train.txt'}" \
     --include-package "allennlp_multi_label"
@@ -66,14 +66,6 @@ To train on more than one GPU, provide a list of CUDA devices in your call to `a
 
 ```bash
 --overrides "{'distributed.cuda_devices': [0, 1, 2, 3]}"
-```
-
-#### Training with mixed-precision
-
-If you want to train with [mixed-precision](https://devblogs.nvidia.com/mixed-precision-training-deep-neural-networks/) (strongly recommended if your GPU supports it), you will need to [install Apex with CUDA and C++ extensions](https://github.com/NVIDIA/apex#quick-start). Once installed, you need only to set `"opt_level"` to `"O1"` in your training [config](configs), or, equivalently, pass the following flag to `allennlp train`
-
-```bash
---overrides "{'trainer.opt_level': 'O1'}"
 ```
 
 ### Inference
