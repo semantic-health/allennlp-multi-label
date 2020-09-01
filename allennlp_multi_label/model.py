@@ -9,7 +9,7 @@ from allennlp.modules import FeedForward, Seq2SeqEncoder, Seq2VecEncoder, TextFi
 from allennlp.modules.seq2vec_encoders import BagOfEmbeddingsEncoder
 from allennlp.nn import InitializerApplicator, util
 from allennlp.nn.util import get_text_field_mask
-from allennlp_multi_label import FBetaMeasureMultiLabel
+from allennlp_multi_label.metrics import FBetaMultiLabelMeasure
 
 
 @Model.register("multi_label")
@@ -95,8 +95,8 @@ class MultiLabelClassifier(Model):
 
         self._classification_layer = torch.nn.Linear(self._classifier_input_dim, self._num_labels)
         self._threshold = threshold
-        self._micro_f1 = FBetaMeasureMultiLabel(average="micro", threshold=self._threshold)
-        self._macro_f1 = FBetaMeasureMultiLabel(average="macro", threshold=self._threshold)
+        self._micro_f1 = FBetaMultiLabelMeasure(average="micro", threshold=self._threshold)
+        self._macro_f1 = FBetaMultiLabelMeasure(average="macro", threshold=self._threshold)
         self._loss = torch.nn.BCEWithLogitsLoss()
         initializer(self)
 
