@@ -13,6 +13,7 @@ local max_length = std.parseInt(std.extVar("MAX_LENGTH"));
             "model_name": transformer_model,
             // Account for special tokens (e.g. CLS and SEP), otherwise a cryptic error is thrown.
             "max_length": max_length - 2,
+            "tokenizer_kwargs": {"is_pretokenized": true, "return_offsets_mapping": true},
         },
         "token_indexers": {
             "tokens": {
@@ -46,8 +47,8 @@ local max_length = std.parseInt(std.extVar("MAX_LENGTH"));
         "num_workers": 1
     },
     "trainer": {
-        // If Apex is installed, chose one of its opt_levels here to use mixed-precision training.
-        "opt_level": null,
+        // Set use_amp to true to use automatic mixed-precision during training (if your GPU supports it)
+        "use_amp": true,
         "optimizer": {
             "type": "huggingface_adamw",
             "lr": 2e-5,
