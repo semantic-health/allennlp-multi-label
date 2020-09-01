@@ -1,4 +1,5 @@
 ![build](https://github.com/JohnGiorgi/allennlp-multi-label-classification/workflows/build/badge.svg?branch=master)
+[![codecov](https://codecov.io/gh/semantic-health/allennlp-multi-label/branch/master/graph/badge.svg)](https://codecov.io/gh/semantic-health/allennlp-multi-label)
 ![GitHub](https://img.shields.io/github/license/JohnGiorgi/allennlp-multi-label-classification?color=blue)
 
 # AllenNLP Multi-label Classification Plugin
