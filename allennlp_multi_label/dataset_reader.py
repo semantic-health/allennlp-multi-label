@@ -2,8 +2,6 @@ import json
 import logging
 from typing import Dict, Iterable, List, Optional, Union
 
-from overrides import overrides
-
 from allennlp.common.file_utils import cached_path
 from allennlp.data.dataset_readers import TextClassificationJsonReader
 from allennlp.data.dataset_readers.dataset_reader import DatasetReader
@@ -11,6 +9,7 @@ from allennlp.data.fields import Field, ListField, MultiLabelField, TextField
 from allennlp.data.instance import Instance
 from allennlp.data.token_indexers import TokenIndexer
 from allennlp.data.tokenizers import Tokenizer
+from overrides import overrides
 
 logger = logging.getLogger(__name__)
 

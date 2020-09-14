@@ -1,8 +1,6 @@
 from typing import Dict, Optional
 
 import torch
-from overrides import overrides
-
 from allennlp.data import TextFieldTensors, Vocabulary
 from allennlp.models.model import Model
 from allennlp.modules import FeedForward, Seq2SeqEncoder, Seq2VecEncoder, TextFieldEmbedder
@@ -10,6 +8,7 @@ from allennlp.modules.seq2vec_encoders import BagOfEmbeddingsEncoder
 from allennlp.nn import InitializerApplicator, util
 from allennlp.nn.util import get_text_field_mask
 from allennlp.training.metrics.fbeta_multi_label_measure import F1MultiLabelMeasure
+from overrides import overrides
 
 
 @Model.register("multi_label")
