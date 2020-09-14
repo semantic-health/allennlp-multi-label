@@ -2,9 +2,9 @@ from pathlib import Path
 from typing import List
 
 import pytest
-
 from allennlp.common.util import ensure_list, get_spacy_model
 from allennlp.data.tokenizers.sentence_splitter import SpacySentenceSplitter
+
 from allennlp_multi_label.dataset_reader import MultiLabelTextClassificationJsonReader
 
 

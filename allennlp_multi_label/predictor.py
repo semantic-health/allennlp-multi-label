@@ -1,8 +1,7 @@
-from overrides import overrides
-
 from allennlp.common.util import JsonDict
 from allennlp.data import Instance
 from allennlp.predictors.predictor import Predictor
+from overrides import overrides
 
 
 @Predictor.register("multi_label")
