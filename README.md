@@ -8,32 +8,29 @@ A multi-label classification plugin for [AllenNLP](https://allennlp.org/).
 
 ## Installation
 
-This repository requires Python 3.6.1 or later.
-
-### Setting up a virtual environment
-
-Before installing, you should create and activate a Python virtual environment. See [here](https://github.com/allenai/allennlp#installing-via-pip) for detailed instructions.
-
-### Installing the library and dependencies
-
-If you _don't_ plan on modifying the source code, install from `git` using `pip`
+This repository requires Python 3.6.1 or later. The preferred way to install is via pip:
 
 ```
-pip install git+https://github.com/semantic-health/allennlp-multi-label.git
+pip install allennlp-multi-label
 ```
 
-Otherwise, clone the repository locally and then install
+If you need pointers on setting up an appropriate Python environment, please see the [AllenNLP install instructions](https://github.com/allenai/allennlp#installing-via-pip).
+
+### Installing from source
+
+You can also install from source. This project is managed with [Poetry](https://python-poetry.org/), so that will need to be installed first.
 
 ```bash
-git clone https://github.com/semantic-health/allennlp-multi-label.git
+# Install poetry for your system: https://python-poetry.org/docs/#installation
+curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
+
+# Clone and move into the repo
+git clone https://github.com/semantic-health/allennlp-multi-label
 cd allennlp-multi-label
-pip install --editable .
+
+# Install the package with poetry
+poetry install
 ```
-
-#### Gotchas
-
-- For the time being, please install [AllenNLP](https://github.com/allenai/allennlp) [from source](https://github.com/allenai/allennlp#installing-from-source).
-- If you plan on training your own model, you should also install [PyTorch](https://pytorch.org/) with [CUDA](https://developer.nvidia.com/cuda-zone) support by following the instructions for your system [here](https://pytorch.org/get-started/locally/).
 
 ## Usage
 
