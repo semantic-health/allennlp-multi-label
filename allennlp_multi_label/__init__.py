@@ -1,3 +1,2 @@
 from allennlp_multi_label.dataset_reader import MultiLabelTextClassificationJsonReader
-from allennlp_multi_label.metrics import FBetaMultiLabelMeasure
 from allennlp_multi_label.model import MultiLabelClassifier
