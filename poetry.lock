@@ -33,6 +33,7 @@ version = "*"
 reference = "e4fd5a0c1afb324c0de2451fb0c84241c136b270"
 type = "git"
 url = "https://github.com/allenai/allennlp.git"
+
 [[package]]
 category = "dev"
 description = "A small Python module for determining appropriate platform-specific dirs, e.g. a \"user data dir\"."
@@ -276,7 +277,7 @@ description = "A library for property-based testing"
 name = "hypothesis"
 optional = false
 python-versions = ">=3.6"
-version = "5.35.2"
+version = "5.35.4"
 
 [package.dependencies]
 attrs = ">=19.2.0"
@@ -345,7 +346,6 @@ version = "0.16.0"
 [[package]]
 category = "main"
 description = "Python bindings for Jsonnet - The data templating language"
-marker = "sys_platform != \"win32\""
 name = "jsonnet"
 optional = false
 python-versions = "*"
@@ -908,7 +908,6 @@ version = "0.8.0"
 [[package]]
 category = "main"
 description = "Backport of pathlib-compatible object wrapper for zip files"
-marker = "python_version < \"3.8\""
 name = "zipp"
 optional = false
 python-versions = ">=3.6"
@@ -919,7 +918,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "d39b0edc87e04838109345df1b98f266bb3b729c89d9611f8bd2c1e2eab09a7c"
+content-hash = "2d1bb1737b4cd6c8fab9bdb42ce10b9db9d24d028c945510df85b6794d26321a"
 lock-version = "1.0"
 python-versions = "^3.6.1"
 
@@ -938,7 +937,6 @@ attrs = [
     {file = "attrs-20.2.0.tar.gz", hash = "sha256:26b54ddbbb9ee1d34d5d3668dd37d6cf74990ab23c828c2888dccdceee395594"},
 ]
 black = [
-    {file = "black-20.8b1-py3-none-any.whl", hash = "sha256:70b62ef1527c950db59062cda342ea224d772abdf6adc58b86a45421bab20a6b"},
     {file = "black-20.8b1.tar.gz", hash = "sha256:1c02557aa099101b9d21496f8a914e9ed2222ef70336404eeeac8edba836fbea"},
 ]
 blis = [
@@ -1094,8 +1092,8 @@ h5py = [
     {file = "h5py-2.10.0.tar.gz", hash = "sha256:84412798925dc870ffd7107f045d7659e60f5d46d1c70c700375248bf6bf512d"},
 ]
 hypothesis = [
-    {file = "hypothesis-5.35.2-py3-none-any.whl", hash = "sha256:e6efd20bbc0feb5c30c790287575bd8e991799fa906e8884e29a612e4e0922db"},
-    {file = "hypothesis-5.35.2.tar.gz", hash = "sha256:b392075490f33141789e3fac6526394d9bf0e313c7e543d4d7c9e2ccd3774896"},
+    {file = "hypothesis-5.35.4-py3-none-any.whl", hash = "sha256:72988c3cf29a89d2b506ffa2c6a1e90bbf1388ea35bac9096079457ed6107062"},
+    {file = "hypothesis-5.35.4.tar.gz", hash = "sha256:049398bc481fbc22d5cbf65aca0de421d09e332cd40ded7ab25fba4bd32edc3d"},
 ]
 idna = [
     {file = "idna-2.10-py2.py3-none-any.whl", hash = "sha256:b97d804b1e9b523befed77c48dacec60e6dcb0b5391d57af6a65a312a90648c0"},
