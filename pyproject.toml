@@ -33,7 +33,7 @@ allennlp = {git = "https://github.com/allenai/allennlp.git"}
 [tool.poetry.dev-dependencies]
 black = "^20.8b1"
 flake8 = "^3.8.3"
-hypothesis = "^5.36.1"
+hypothesis = "^5.37.0"
 pytest = "^6.1.0"
 pytest-cov = "^2.10.1"
 coverage = "^5.3"
