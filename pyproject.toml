@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "allennlp-multi-label"
-version = "0.1.0"
+version = "0.1.0-alpha.0"
 description = "A multi-label classification plugin for AllenNLP"
 license = "Apache-2.0"
 authors = ["johngiorgi <johnmgiorgi@gmail.com>"]
