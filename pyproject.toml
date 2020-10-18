@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "allennlp-multi-label"
 version = "0.1.0"
-description = "A multi-label classification plugin for AllenNLP"
+description = "A multi-label classification plugin for AllenNLP."
 license = "Apache-2.0"
 authors = ["johngiorgi <johnmgiorgi@gmail.com>"]
 readme = "README.md"
@@ -25,6 +25,7 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
     "Typing :: Typed",
 ]
+exclude = ["tests", "training_config"]
 
 [tool.poetry.dependencies]
 python = "^3.6.1"
