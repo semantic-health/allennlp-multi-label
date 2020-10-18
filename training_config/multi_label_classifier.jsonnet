@@ -6,6 +6,11 @@ local transformer_model = std.extVar("TRANSFORMER_MODEL");
 local max_length = std.parseInt(std.extVar("MAX_LENGTH"));
 
 {
+    'vocabulary': {
+        'max_vocab_size': {
+            'tokens': 0
+        }
+    },
     "dataset_reader": {
         "type": "multi_label",
         "tokenizer": {
@@ -13,7 +18,6 @@ local max_length = std.parseInt(std.extVar("MAX_LENGTH"));
             "model_name": transformer_model,
             // Account for special tokens (e.g. CLS and SEP), otherwise a cryptic error is thrown.
             "max_length": max_length - 2,
-            "tokenizer_kwargs": {"is_pretokenized": true, "return_offsets_mapping": true},
         },
         "token_indexers": {
             "tokens": {
@@ -21,9 +25,6 @@ local max_length = std.parseInt(std.extVar("MAX_LENGTH"));
                 "model_name": transformer_model,
             },
         },
-        // If not null, a cache of already-processed data will be stored in this directory.
-        // If a cache file exists at this directory, it will be loaded instead of re-processing the data.
-        "cache_directory": null
     },
     "train_data_path": null,
     "validation_data_path": null,
@@ -60,7 +61,8 @@ local max_length = std.parseInt(std.extVar("MAX_LENGTH"));
                 [["(?=.*transformer_model)(?=.*\\.+)(?!.*(LayerNorm|bias)).*$"], {"weight_decay": 0.1}],
             ],
         },
-        "num_epochs": 1,
+        "patience": 1,
+        "num_epochs": 5,
         "checkpointer": {
             "num_serialized_models_to_keep": 1,
         },
