@@ -18,7 +18,15 @@ If you need pointers on setting up an appropriate Python environment, please see
 
 ### Installing from source
 
-You can also install from source. This project is managed with [Poetry](https://python-poetry.org/), so that will need to be installed first.
+You can also install from source. 
+
+Using `pip`:
+
+```
+pip install git+https://github.com/semantic-health/allennlp-multi-label.git
+```
+
+Using [Poetry](https://python-poetry.org/):
 
 ```bash
 # Install poetry for your system: https://python-poetry.org/docs/#installation
