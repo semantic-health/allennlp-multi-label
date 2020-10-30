@@ -37,24 +37,23 @@ setup(
         'License :: OSI Approved :: Apache Software License',
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
         'Topic :: Scientific/Engineering :: Artificial Intelligence',
         'Typing :: Typed'
     ],
     packages=['allennlp_multi_label'],
     package_dir={"": "."},
     package_data={},
-    install_requires=['allennlp'],
-    dependency_links=[
-        'git+https://github.com/allenai/allennlp.git#egg=allennlp'
-    ],
+    install_requires=['allennlp==1.*,>=1.2.0'],
     extras_require={
         "dev": [
             "black==20.*,>=20.8.0.b1", "codecov==2.*,>=2.1.10",
             "coverage==5.*,>=5.3.0", "dephell[full]==0.*,>=0.8.3",
             "flake8==3.*,>=3.8.4", "hypothesis==5.*,>=5.38.0",
-            "pytest==6.*,>=6.1.1", "pytest-cov==2.*,>=2.10.1"
+            "pytest==6.*,>=6.1.2", "pytest-cov==2.*,>=2.10.1"
         ]
     },
 )
