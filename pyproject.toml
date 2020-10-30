@@ -20,8 +20,10 @@ classifiers = [
     "License :: OSI Approved :: Apache Software License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.6",
     "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
     "Typing :: Typed",
 ]
@@ -29,7 +31,7 @@ exclude = ["tests", "training_config"]
 
 [tool.poetry.dependencies]
 python = "^3.6.1"
-allennlp = {git = "https://github.com/allenai/allennlp.git"}
+allennlp = "^1.2.0"
 
 [tool.dephell.main]
 from = {format = "poetry", path = "pyproject.toml"}
