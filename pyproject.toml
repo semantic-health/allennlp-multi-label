@@ -38,7 +38,7 @@ to = {format = "setuppy", path = "setup.py"}
 [tool.poetry.dev-dependencies]
 black = "^20.8b1"
 flake8 = "^3.8.4"
-hypothesis = "^5.41.2"
+hypothesis = "^6.12.0"
 pytest = "^6.1.2"
 pytest-cov = "^2.10.1"
 coverage = "^5.3"
